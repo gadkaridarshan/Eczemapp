@@ -21,7 +21,7 @@ import androidx.annotation.StyleRes;
 public class ResultRowView extends RelativeLayout {
 
   public final TextView nameTextView;
-  public final TextView scoreTextView;
+  // public final TextView scoreTextView;
   private final @Px
   int mProgressBarHeightPx;
   private final @Px
@@ -50,7 +50,7 @@ public class ResultRowView extends RelativeLayout {
     super(context, attrs, defStyleAttr, defStyleRes);
     inflate(context, R.layout.image_classification_result_row, this);
     nameTextView = findViewById(R.id.result_row_name_text);
-    scoreTextView = findViewById(R.id.result_row_score_text);
+    // scoreTextView = findViewById(R.id.result_row_score_text);
 
     TypedArray a = context.getTheme().obtainStyledAttributes(
         attrs,
@@ -62,7 +62,7 @@ public class ResultRowView extends RelativeLayout {
               R.style.TextAppearanceImageClassificationResultTop2Plus);
 
       nameTextView.setTextAppearance(context, textAppearanceResId);
-      scoreTextView.setTextAppearance(context, textAppearanceResId);
+      // scoreTextView.setTextAppearance(context, textAppearanceResId);
 
       final @DimenRes int progressBarHeightDimenResId =
           a.getResourceId(R.styleable.ResultRowView_progressBarHeightRes, 0);
@@ -115,10 +115,10 @@ public class ResultRowView extends RelativeLayout {
     mIsInProgress = isInProgress;
     if (isInProgress) {
       nameTextView.setVisibility(View.INVISIBLE);
-      scoreTextView.setVisibility(View.INVISIBLE);
+      // scoreTextView.setVisibility(View.INVISIBLE);
     } else {
       nameTextView.setVisibility(View.VISIBLE);
-      scoreTextView.setVisibility(View.VISIBLE);
+      // scoreTextView.setVisibility(View.VISIBLE);
     }
 
     if (changed) {

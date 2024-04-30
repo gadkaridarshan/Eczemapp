@@ -81,7 +81,7 @@ public class TextClassificationActivity extends BaseModuleActivity {
 
     final ResultRowView headerRow = findViewById(R.id.text_classification_result_header_row);
     headerRow.nameTextView.setText(R.string.text_classification_topic);
-    headerRow.scoreTextView.setText(R.string.text_classification_score);
+    // headerRow.scoreTextView.setText(R.string.text_classification_score);
     headerRow.setVisibility(View.VISIBLE);
 
     mResultRowViews[0] = findViewById(R.id.text_classification_top1_result_row);
@@ -160,7 +160,7 @@ public class TextClassificationActivity extends BaseModuleActivity {
 
   private void setUiResultRowView(ResultRowView resultRowView, String name, String score) {
     resultRowView.nameTextView.setText(name);
-    resultRowView.scoreTextView.setText(score);
+    // resultRowView.scoreTextView.setText(score);
     resultRowView.setProgressState(false);
   }
 

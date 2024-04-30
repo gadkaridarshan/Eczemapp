@@ -38,7 +38,7 @@ import androidx.camera.core.ImageProxy;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONArrayRequestListener;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 
 import org.json.JSONObject;
 import org.json.JSONException;
@@ -135,7 +135,7 @@ public class ImageClassificationActivity extends AbstractCameraXActivity<ImageCl
     final ResultRowView headerResultRowView =
         findViewById(R.id.image_classification_result_header_row);
     headerResultRowView.nameTextView.setText(R.string.image_classification_results_header_row_name);
-    headerResultRowView.scoreTextView.setText(R.string.image_classification_results_header_row_score);
+    // headerResultRowView.scoreTextView.setText(R.string.image_classification_results_header_row_score);
 
     mResultRowViews[0] = findViewById(R.id.image_classification_top1_result_row);
     mResultRowViews[1] = findViewById(R.id.image_classification_top2_result_row);
@@ -159,8 +159,8 @@ public class ImageClassificationActivity extends AbstractCameraXActivity<ImageCl
     for (int i = 0; i < TOP_K; i++) {
       final ResultRowView rowView = mResultRowViews[i];
       rowView.nameTextView.setText(result.topNClassNames[i]);
-      rowView.scoreTextView.setText(String.format(Locale.US, SCORES_FORMAT,
-          result.topNScores[i]));
+      // rowView.scoreTextView.setText(String.format(Locale.US, SCORES_FORMAT,
+      //     result.topNScores[i]));
       rowView.setProgressState(false);
     }
 
@@ -250,15 +250,15 @@ public class ImageClassificationActivity extends AbstractCameraXActivity<ImageCl
             String batchString = Long.toString(batch);
             jsonObject.put("batch", batchString);
 
-            AndroidNetworking.post("http://139.162.229.216:8080/classification/create/")
+            AndroidNetworking.post("https://x6zqxtaxgr52.share.zrok.io/classification/create/")
                  .addJSONObjectBody(jsonObject) // posting json
                  .addHeaders("accept", "application/json")
                  .addHeaders("Content-Type", "application/json")
                  .addHeaders("token", "ICjgxQXFB9_UjD7UKP5-Qti4ymx1dfH5YyOdHIT04LZCycRPuXSZpLeVfWgYC4KjMaqA1nPLXwq3c6CVw07dXw")
                  .setTag("test")
                  .build()
-                 .getAsJSONArray(new JSONArrayRequestListener() {
-                    public void onResponse(JSONArray response) {
+                 .getAsJSONObject(new JSONObjectRequestListener() {
+                    public void onResponse(JSONObject response) {
                       // do anything with response
                       Log.i("Successful API call classification/create/:", String.valueOf(response));
                     }
