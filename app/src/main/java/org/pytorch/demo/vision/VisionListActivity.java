@@ -27,6 +27,9 @@ public class VisionListActivity extends AbstractListActivity {
           InfoViewFactory.INFO_VIEW_TYPE_IMAGE_CLASSIFICATION_RESNET);
       startActivity(intent);
     });
+    findViewById(R.id.vision_card_eczema_feedback_click_area).setOnClickListener(v -> 
+    startActivity(new Intent(VisionListActivity.this, FeedbackActivity.class))
+    );
   }
 
   @Override

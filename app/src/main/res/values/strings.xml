@@ -6,8 +6,8 @@
     <string name="main_nlp_button">Language</string>
 
     <string name="vision_list_image_classification_button">Eczema Detection</string>
-    <string name="image_classification_title">Image Classification</string>
-    <string name="image_classification_results_header_row_name">Classification</string>
+    <string name="image_classification_title">Eczema Detection</string>
+    <string name="image_classification_results_header_row_name">Detected</string>
     <string name="image_classification_results_header_row_score">Score</string>
 
     <string name="text_classification">Text Classification</string>
@@ -23,6 +23,9 @@
 
     <string name="vision_card_qmobilenet_title">Eczema Detection\nQuantized MobileNetV2</string>
     <string name="vision_card_qmobilenet_description">Inference in int8.\nInput is float32 tensor of 1x3x224x224 shape</string>
+
+    <string name="vision_card_eczema_feedback_title">Feedback for\nEczema Treatment</string>
+    <string name="vision_card_eczema_feedback_description">Click here to provide your feedback for the medical team to review and provide comments and next steps</string>
 
     <string name="vision_card_resnet_title">Eczema Detection</string>
     <string name="vision_card_resnet_description">Click to go live and let this app do the Eczema detection</string>

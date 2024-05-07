@@ -32,6 +32,7 @@
             android:exported="true">
         </activity>
         <activity android:name=".nlp.TextClassificationActivity" />
+        <activity android:name=".vision.FeedbackActivity" />
 
     </application>
 

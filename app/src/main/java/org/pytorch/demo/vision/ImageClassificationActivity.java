@@ -25,13 +25,6 @@ import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Queue;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.Collections;
-import java.util.List;
-
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 import androidx.camera.core.ImageProxy;
@@ -59,35 +52,7 @@ public class ImageClassificationActivity extends AbstractCameraXActivity<ImageCl
   private static final String FORMAT_FPS = "%.1fFPS";
   public static final String SCORES_FORMAT = "%.2f";
 
-  public static String getMacAddr() {
-        try {
-            List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
-            for (NetworkInterface nif : all) {
-                if (!nif.getName().equalsIgnoreCase("wlan0")) continue;
-
-                byte[] macBytes = nif.getHardwareAddress();
-                if (macBytes == null) {
-                    return "";
-                }
-
-                StringBuilder res1 = new StringBuilder();
-                for (byte b : macBytes) {
-                    res1.append(Integer.toHexString(b & 0xFF) + ":");
-                }
-
-                if (res1.length() > 0) {
-                    res1.deleteCharAt(res1.length() - 1);
-                }
-                return res1.toString();
-            }
-        } catch (Exception ex) {
-            //handle exception
-        }
-        return "";
-    }
-
-  // public String serial = Secure.getString(Secure.ANDROID_ID);
-  public String serial = getMacAddr();
+  public String serial = Utils.getMacAddr();
 
   static class AnalysisResult {
 
