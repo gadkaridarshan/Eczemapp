@@ -4,46 +4,62 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/feedbackPage"
     tools:context="org.pytorch.demo.vision.FeedbackActivity">
 
     <EditText
-        android:id="@+id/etFrom"
+        android:id="@+id/feedbackSummary"
         android:layout_width="350dp"
         android:layout_height="100dp"
         android:layout_marginTop="40dp"
         android:background="@drawable/border"
         android:ems="10"
         android:gravity="center"
-        android:hint="French"
+        android:hint="Please enter your Feedback Summary here"
         android:inputType="textMultiLine"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+    
+    <EditText
+        android:id="@+id/feedbackDetails"
+        android:layout_width="350dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/border"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="Please enter your Feedback Details here"
+        android:inputType="textMultiLine"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/feedbackSummary" />
 
     <Button
-        android:id="@+id/btnTranslate"
+        android:id="@+id/btnFeedbackSubmit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Translate"
+        android:text="Submit Feedback"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etFrom" />
+        app:layout_constraintTop_toBottomOf="@+id/feedbackDetails" />
 
     <TextView
-        android:id="@+id/tvTo"
+        android:id="@+id/feedbackStatus"
         android:layout_width="350dp"
         android:layout_height="100dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/border"
         android:gravity="center"
-        android:hint="English"
+        android:hint="Feedback Submission Status"
         android:textAlignment="center"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnTranslate" />
+        app:layout_constraintTop_toBottomOf="@+id/btnFeedbackSubmit" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -35,7 +35,6 @@ import com.androidnetworking.interfaces.JSONObjectRequestListener;
 
 import org.json.JSONObject;
 import org.json.JSONException;
-import org.json.JSONArray;
 
 public class ImageClassificationActivity extends AbstractCameraXActivity<ImageClassificationActivity.AnalysisResult> {
 

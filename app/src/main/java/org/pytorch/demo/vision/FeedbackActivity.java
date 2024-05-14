@@ -7,8 +7,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.Nullable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,6 +22,7 @@ import org.pytorch.PyTorchAndroid;
 import org.pytorch.Tensor;
 
 import org.pytorch.demo.R;
+import org.pytorch.demo.Utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,7 +33,13 @@ import java.nio.FloatBuffer;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
 
-public class FeedbackActivity extends AppCompatActivity{
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.ANRequest;
+import com.androidnetworking.common.ANResponse;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
+
+public class FeedbackActivity extends AppCompatActivity implements Runnable{
     // to be consistent with the model inputs defined in seq2seq_nmt.py, based on
     // https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html
     private static final int HIDDEN_SIZE = 256;
@@ -36,12 +47,15 @@ public class FeedbackActivity extends AppCompatActivity{
     private static final int MAX_LENGTH = 50;
     private static final String TAG = FeedbackActivity.class.getName();
 
+    public String serial = Utils.getMacAddr();
+
     private Module mModuleEncoder;
     private Module mModuleDecoder;
     private Tensor mInputTensor;
     private LongBuffer mInputTensorBuffer;
 
-    private EditText mEditText;
+    private EditText mFeedbackSummary;
+    private EditText mFeedbackDetails;
     private TextView mTextView;
     private Button mButton;
 
@@ -70,147 +84,76 @@ public class FeedbackActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feedback);
 
-        mButton = findViewById(R.id.btnTranslate);
-        mEditText = findViewById(R.id.etFrom);
-        mTextView = findViewById(R.id.tvTo);
+        mButton = findViewById(R.id.btnFeedbackSubmit);
+        mFeedbackSummary = findViewById(R.id.feedbackSummary);
+        mFeedbackDetails = findViewById(R.id.feedbackDetails);
+        mTextView = findViewById(R.id.feedbackStatus);
 
-        // mButton.setOnClickListener(new View.OnClickListener() {
-        //     public void onClick(View v) {
-        //         mButton.setEnabled(false);
-        //         Thread thread = new Thread(MainActivity.this);
-        //         thread.start();
-        //     }
-        // });
+        mButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                mButton.setEnabled(false);
+                Thread thread = new Thread(FeedbackActivity.this);
+                thread.start();
+            }
+        });
     }
 
-    // private void showTranslationResult(String result) {
-    //     mTextView.setText(result);
-    // }
+    private void showTranslationResult(String result) {
+        mTextView.setText(result);
+        mFeedbackSummary.setHint("Please enter your Feedback Summary here");
+        mFeedbackSummary.setText(null);
+        mFeedbackDetails.setHint("Please enter your Feedback Details here");
+        mFeedbackDetails.setText(null);
+    }
 
-    // public void run() {
-    //     final String result = translate(mEditText.getText().toString());
-    //     runOnUiThread(() -> {
-    //         showTranslationResult(result);
-    //         mButton.setEnabled(true);
-    //     });
-    // }
+    public void run() {
+        final String result = callFeedbackAPI(mFeedbackSummary.getText().toString(), mFeedbackDetails.getText().toString());
+        runOnUiThread(() -> {
+            showTranslationResult(result);
+            mButton.setEnabled(true);
+        });
+    }
 
-    // private String translate(final String text) {
-    //     if (mModuleEncoder == null) {
-    //         try {
-    //             mModuleEncoder = LiteModuleLoader.load(MainActivity.assetFilePath(getApplicationContext(), "optimized_encoder_150k.ptl"));
-    //         } catch (IOException e) {
-    //             Log.e(TAG, "Error reading assets", e);
-    //             finish();
-    //         }
-    //     }
+    @Nullable
+    private String callFeedbackAPI(final String summary, final String details) {
+        final String[] result = {null};
+        Log.i("serial;", serial);
+        Log.i("summary;", summary);
+        Log.i("details;", details);
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("serial", serial);
+            jsonObject.put("summary", summary);
+            jsonObject.put("details", details);
 
-    //     String json;
-    //     JSONObject wrd2idx;
-    //     JSONObject idx2wrd;
-    //     try {
-    //         InputStream is = getAssets().open("target_idx2wrd.json");
-    //         int size = is.available();
-    //         byte[] buffer = new byte[size];
-    //         is.read(buffer);
-    //         is.close();
+            ANRequest request = AndroidNetworking.post("https://x6zqxtaxgr52.share.zrok.io/feedback/create/")
+                    .addJSONObjectBody(jsonObject) // posting json
+                    .addHeaders("accept", "application/json")
+                    .addHeaders("Content-Type", "application/json")
+                    .addHeaders("token", "ICjgxQXFB9_UjD7UKP5-Qti4ymx1dfH5YyOdHIT04LZCycRPuXSZpLeVfWgYC4KjMaqA1nPLXwq3c6CVw07dXw")
+                    .setTag("test")
+                    .build();
+            
+            ANResponse<JSONObject> response = request.executeForJSONObject();
 
-    //         json = new String(buffer, "UTF-8");
-    //         idx2wrd = new JSONObject(json);
+            Log.i("response success:;", String.valueOf(response.isSuccess()));
+            Log.i("response;", String.valueOf(response));
 
-    //         is = getAssets().open("source_wrd2idx.json");
-    //         size = is.available();
-    //         buffer = new byte[size];
-    //         is.read(buffer);
-    //         is.close();
+            if (response.isSuccess()) {
+                Log.i("Successful API call feedback/create/:", String.valueOf(response.getResult()));
+                result[0] = "Feedback Submission: Successful";
+            } else {
+                ANError error = response.getError();
+                Log.e("Failed API call feedback/create/:", String.valueOf(error));
+                result[0] = "Feedback Submission: Failed";
+            }
 
-    //         json = new String(buffer, "UTF-8");
-    //         wrd2idx = new JSONObject(json);
-    //     } catch (JSONException | IOException e) {
-    //         android.util.Log.e(TAG, "JSONException | IOException ", e);
-    //         return null;
-    //     }
+            return result[0];
 
-    //     String french = text;
-    //     long[] inputs =  new long [french.split(" ").length];
-    //     try {
-    //         for (int i = 0; i < french.split(" ").length; i++) {
-    //             inputs[i] = wrd2idx.getLong(french.split(" ")[i]);
-    //         }
-    //     }
-    //     catch (JSONException e) {
-    //         android.util.Log.e(TAG, "JSONException ", e);
-    //         return null;
-    //     }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-    //     final long[] inputShape = new long[]{1};
-    //     final long[] hiddenShape = new long[]{1, 1, 256};
-    //     final FloatBuffer hiddenTensorBuffer =
-    //             Tensor.allocateFloatBuffer(1 * 1 * 256);
-    //     Tensor hiddenTensor = Tensor.fromBlob(hiddenTensorBuffer, hiddenShape);
-
-    //     final long[] outputsShape = new long[]{MAX_LENGTH, HIDDEN_SIZE};
-    //     final FloatBuffer outputsTensorBuffer =
-    //             Tensor.allocateFloatBuffer(MAX_LENGTH  * HIDDEN_SIZE);
-
-    //     for (int i=0; i<inputs.length; i++) {
-    //         LongBuffer inputTensorBuffer = Tensor.allocateLongBuffer(1);
-    //         inputTensorBuffer.put(inputs[i]);
-    //         Tensor inputTensor = Tensor.fromBlob(inputTensorBuffer, inputShape);
-    //         final IValue[] outputTuple = mModuleEncoder.forward(IValue.from(inputTensor), IValue.from(hiddenTensor)).toTuple();
-    //         final Tensor outputTensor = outputTuple[0].toTensor();
-    //         outputsTensorBuffer.put(outputTensor.getDataAsFloatArray());
-    //         hiddenTensor = outputTuple[1].toTensor();
-    //     }
-
-    //     Tensor outputsTensor = Tensor.fromBlob(outputsTensorBuffer, outputsShape);
-    //     final long[] decoderInputShape = new long[]{1, 1};
-    //     if (mModuleDecoder == null) {
-    //         try {
-    //             mModuleDecoder = LiteModuleLoader.load(MainActivity.assetFilePath(getApplicationContext(), "optimized_decoder_150k.ptl"));
-    //         } catch (IOException e) {
-    //             Log.e(TAG, "Error reading assets", e);
-    //             finish();
-    //         }
-    //     }
-
-    //     mInputTensorBuffer = Tensor.allocateLongBuffer(1);
-    //     mInputTensorBuffer.put(0);
-    //     mInputTensor = Tensor.fromBlob(mInputTensorBuffer, decoderInputShape);
-    //     ArrayList<Integer> result = new ArrayList<>(MAX_LENGTH);
-    //     for (int i=0; i<MAX_LENGTH; i++) {
-    //         final IValue[] outputTuple = mModuleDecoder.forward(
-    //             IValue.from(mInputTensor),
-    //             IValue.from(hiddenTensor),
-    //             IValue.from(outputsTensor)).toTuple();
-    //         final Tensor decoderOutputTensor = outputTuple[0].toTensor();
-    //         hiddenTensor = outputTuple[1].toTensor();
-    //         float[] outputs = decoderOutputTensor.getDataAsFloatArray();
-    //         int topIdx = 0;
-    //         double topVal = -Double.MAX_VALUE;
-    //         for (int j=0; j<outputs.length; j++) {
-    //             if (outputs[j] > topVal) {
-    //                 topVal = outputs[j];
-    //                 topIdx = j;
-    //             }
-    //         }
-
-    //         if (topIdx == EOS_TOKEN) break;
-
-    //         result.add(topIdx);
-    //         mInputTensorBuffer = Tensor.allocateLongBuffer(1);
-    //         mInputTensorBuffer.put(topIdx);
-    //         mInputTensor = Tensor.fromBlob(mInputTensorBuffer, decoderInputShape);
-    //     }
-
-    //     String english = "";
-    //     try {
-    //         for (int i = 0; i < result.size(); i++)
-    //             english += " " + idx2wrd.getString("" + result.get(i));
-    //     }
-    //     catch (JSONException e) {
-    //         android.util.Log.e(TAG, "JSONException ", e);
-    //     }
-    //     return english;
-    // }
 }
