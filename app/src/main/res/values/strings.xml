@@ -30,6 +30,8 @@
     <string name="vision_card_resnet_title">Eczema Detection</string>
     <string name="vision_card_resnet_description">Click to go live and let this app do the Eczema detection</string>
 
+    <string name="header_feedbacks">Feedbacks Provided So Far</string>
+    <string name="header_feedback">Provide Feedback Here</string>
     <string name="nlp_card_lstm_title">Text Classification.\nLSTM model trained on Reddit comments dataset. </string>
     <string name="nlp_card_lstm_description">Predicts subreddit by given comment.\nInput is uint8 1xN shaped tensor, where N is the length of text\'s bytes representation in utf-8 encoding. Output classes are subreddits.</string>
     <string name="clear">Clear</string>
