@@ -13,7 +13,7 @@
         android:id="@+id/headerFeedback"
         android:layout_width="match_parent"
         android:layout_marginTop="10dp"
-        android:layout_height="40dp"
+        android:layout_height="30dp"
         android:background="#777777"
         android:textStyle="bold"
         android:gravity="left"
@@ -27,8 +27,8 @@
     <EditText
         android:id="@+id/feedbackSummary"
         android:layout_width="350dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="5dp"
         android:background="@drawable/border"
         android:ems="10"
         android:gravity="center"
@@ -42,8 +42,8 @@
     <EditText
         android:id="@+id/feedbackDetails"
         android:layout_width="350dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="20dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="5dp"
         android:background="@drawable/border"
         android:ems="10"
         android:gravity="center"
@@ -53,22 +53,42 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/feedbackSummary" />
+    
+    <ImageView
+        android:layout_width="match_parent"
+        android:id="@+id/feedbackImageView"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/feedbackDetails"
+         />
+    
+    <Button
+        android:id="@+id/btnFeedbackImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Take Photo or Choose from Gallery"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/feedbackImageView" />
 
     <Button
         android:id="@+id/btnFeedbackSubmit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="5dp"
         android:text="Submit Feedback"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/feedbackDetails" />
+        app:layout_constraintTop_toBottomOf="@+id/btnFeedbackImage" />
 
     <TextView
         android:id="@+id/feedbackStatus"
         android:layout_width="350dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="20dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="5dp"
         android:background="@drawable/border"
         android:gravity="center"
         android:hint="Feedback Submission Status"
@@ -81,7 +101,7 @@
     <TextView
         android:id="@+id/headerFeedbacks"
         android:layout_width="fill_parent"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_height="40dp"
         android:background="#777777"
         android:textStyle="bold"
