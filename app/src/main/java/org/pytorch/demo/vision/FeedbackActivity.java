@@ -67,6 +67,10 @@ import java.util.ArrayList;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import java.util.Date;
+import android.icu.text.SimpleDateFormat;
+import java.util.Locale;
+
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.ANRequest;
 import com.androidnetworking.common.ANResponse;
@@ -239,7 +243,10 @@ public class FeedbackActivity extends AppCompatActivity implements Runnable{
 
         try {
             //create a file to write bitmap data
-            File fImage = new File(FeedbackActivity.this.getCacheDir(), "abc.png");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSSZ", Locale.getDefault());
+            String currentDateAndTime = sdf.format(new Date());
+            String fileName = serial.replace(":","_") + "__" + currentDateAndTime + ".png";
+            File fImage = new File(FeedbackActivity.this.getCacheDir(), fileName);
             fImage.createNewFile();
 
             //write the bytes in file
@@ -518,7 +525,6 @@ public class FeedbackActivity extends AppCompatActivity implements Runnable{
                 case 0:
                     if (resultCode == RESULT_OK) {
                         Log.v(TAG, "*******");
-                        // Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
                         Bitmap selectedImage = null;
                         try {
                             selectedImage = BitmapFactory.decodeStream(getContentResolver().openInputStream(mImageUri));
