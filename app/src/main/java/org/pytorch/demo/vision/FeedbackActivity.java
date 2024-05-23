@@ -332,46 +332,34 @@ public class FeedbackActivity extends AppCompatActivity implements Runnable{
         Log.i("image length:", String.valueOf(image.length()));
         Log.i("image name:", image.getName());
         Log.i("image is file?:", String.valueOf(image.isFile()));
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("serial", serial);
-            jsonObject.put("summary", summary);
-            jsonObject.put("details", details);
-            jsonObject.put("imgLink", image.getName());
 
-            ANRequest request = AndroidNetworking.upload("https://x6zqxtaxgr52.share.zrok.io/feedback/create/")
-                    // .addJSONObjectBody(jsonObject) // posting json
-                    .addQueryParameter("serial", serial) // serial as query param
-                    .addQueryParameter("summary", summary) // summary as query param
-                    .addQueryParameter("details", details) // details as query param
-                    .addQueryParameter("imgLink", image.getName()) // details as query param
-                    .addMultipartFile("feedback_file",image)  
-                    .addHeaders("accept", "application/json")
-                    .addHeaders("Content-Type", "application/json")
-                    .addHeaders("token", "ICjgxQXFB9_UjD7UKP5-Qti4ymx1dfH5YyOdHIT04LZCycRPuXSZpLeVfWgYC4KjMaqA1nPLXwq3c6CVw07dXw")
-                    .setTag("test")
-                    .build();
-            
-            ANResponse<JSONObject> response = request.executeForJSONObject();
+        ANRequest request = AndroidNetworking.upload("https://x6zqxtaxgr52.share.zrok.io/feedback/create/")
+                .addQueryParameter("serial", serial) // serial as query param
+                .addQueryParameter("summary", summary) // summary as query param
+                .addQueryParameter("details", details) // details as query param
+                .addQueryParameter("img_link", image.getName()) // details as query param
+                .addMultipartFile("feedback_file",image)  
+                .addHeaders("accept", "application/json")
+                .addHeaders("Content-Type", "application/json")
+                .addHeaders("token", "ICjgxQXFB9_UjD7UKP5-Qti4ymx1dfH5YyOdHIT04LZCycRPuXSZpLeVfWgYC4KjMaqA1nPLXwq3c6CVw07dXw")
+                .setTag("test")
+                .build();
+        
+        ANResponse<JSONObject> response = request.executeForJSONObject();
 
-            Log.i("POST API response success: ", String.valueOf(response.isSuccess()));
-            Log.i("POST API response: ", String.valueOf(response));
+        Log.i("POST API response success: ", String.valueOf(response.isSuccess()));
+        Log.i("POST API response: ", String.valueOf(response));
 
-            if (response.isSuccess()) {
-                Log.i("Successful API call feedback/create/:", String.valueOf(response.getResult()));
-                result[0] = "Feedback Submission: Successful";
-            } else {
-                ANError error = response.getError();
-                Log.e("Failed API call feedback/create/:", String.valueOf(error));
-                result[0] = "Feedback Submission: Failed";
-            }
-
-            return result[0];
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
+        if (response.isSuccess()) {
+            Log.i("Successful API call feedback/create/:", String.valueOf(response.getResult()));
+            result[0] = "Feedback Submission: Successful";
+        } else {
+            ANError error = response.getError();
+            Log.e("Failed API call feedback/create/:", String.valueOf(error));
+            result[0] = "Feedback Submission: Failed";
         }
+
+        return result[0];
     }
 
     @Nullable
