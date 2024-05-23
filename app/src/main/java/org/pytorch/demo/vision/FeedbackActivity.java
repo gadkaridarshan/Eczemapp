@@ -21,8 +21,11 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.os.Environment;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -53,6 +56,7 @@ import org.pytorch.demo.Utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -92,6 +96,8 @@ public class FeedbackActivity extends AppCompatActivity implements Runnable{
     private Button mButton;
     private Button mButtonImage;
     private ImageView mFeedbackImageView;
+
+    private Uri mImageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -414,6 +420,20 @@ public class FeedbackActivity extends AppCompatActivity implements Runnable{
                     // Open the camera and get the photo
 
                     Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+
+                    try {
+                        mImageUri = Uri.fromFile(getTempFile());
+                        takePicture.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+                    }
+                    catch(Exception e)
+                    {
+                        Log.v(TAG, "!@#$!");
+                        Log.v(TAG, "Can't create file to take picture!");
+                        Log.v(TAG, "!@#$!!!");
+                        Toast.makeText(FeedbackActivity.this, "Please check SD card! Image shot is impossible!", 10000);
+                    }
+                    
+
                     startActivityForResult(takePicture, 0);
                 }
                 else if(optionsMenu[i].equals("Choose from Gallery")){
@@ -432,6 +452,12 @@ public class FeedbackActivity extends AppCompatActivity implements Runnable{
             }
         });
         builder.show();
+    }
+
+    private File getTempFile()
+    {
+        //it will return /sdcard/image.tmp
+        return new File(Environment.getExternalStorageDirectory(),  "image.tmp");
     }
 
     // function to check permission
@@ -490,8 +516,17 @@ public class FeedbackActivity extends AppCompatActivity implements Runnable{
         if (resultCode != RESULT_CANCELED) {
             switch (requestCode) {
                 case 0:
-                    if (resultCode == RESULT_OK && data != null) {
-                        Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
+                    if (resultCode == RESULT_OK) {
+                        Log.v(TAG, "*******");
+                        // Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
+                        Bitmap selectedImage = null;
+                        try {
+                            selectedImage = BitmapFactory.decodeStream(getContentResolver().openInputStream(mImageUri));
+                        }
+                        catch (FileNotFoundException e) 
+                        {
+                            e.printStackTrace();
+                        }
                         Matrix matrix = new Matrix();
                         matrix.postRotate(90);
                         selectedImage = Bitmap.createBitmap(selectedImage, 0, 0,
