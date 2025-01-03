@@ -20,6 +20,7 @@ public class Constants {
       "headphone",
       "lamp",
       "laptop",
+      "other_skin_condition",
       "pizza",
       "rug",
       "sofa",
